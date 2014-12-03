@@ -1,0 +1,50 @@
+{
+  "builders":
+  [
+    {
+      "type": "qemu",
+      "iso_url": "http://download.freenas.org/9.3/BETA/x64/FreeNAS-9.3-BETA-aaa86f0-x64.iso",
+      "iso_checksum": "b486d4169ef48b820614dfe36e395d8b",
+      "iso_checksum_type": "md5",
+      "output_directory": "output",
+      "ssh_wait_timeout": "5s",
+      "shutdown_command": "shutdown -P now",
+      "disk_size": 5000,
+      "format": "qcow2",
+      "headless": false,
+      "accelerator": "kvm",
+      "http_directory": "httpdir",
+      "http_port_min": 10082,
+      "http_port_max": 10089,
+      "ssh_host_port_min": 2222,
+      "ssh_host_port_max": 2229,
+      "ssh_username": "root",
+      "ssh_password": "freenas",
+      "ssh_port": 22,
+      "vm_name": "tdhtest",
+      "net_device": "virtio-net",
+      "disk_interface": "virtio",
+      "boot_wait": "1s",
+      "boot_command":
+      [
+        "<enter>",
+        "<wait10><wait5>1<enter>",
+        "<spacebar><enter>",
+        "<enter>",
+        "freenas<tab>freenas<tab><enter>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10><wait10><wait10><wait10><wait5>",
+        "<enter>",
+        "4<enter>"
+      ]
+    }
+  ],
+
+  "post-processors":[
+    {
+      "output": "FreeNAS-9.3-BETA-aaa86f0-x64-vbox.box",
+      "type": "vagrant",
+      "compression_level": 1,
+      "keep_input_artifact": true
+    }
+  ]
+}
