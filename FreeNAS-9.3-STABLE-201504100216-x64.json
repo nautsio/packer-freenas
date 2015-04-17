@@ -1,0 +1,46 @@
+{
+  "builders":
+  [
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "FreeBSD_64",
+      "iso_url": "http://download.freenas.org/9.3/STABLE/201504100216/x64/FreeNAS-9.3-STABLE-201504100216.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "a983cf672da626713b0fd863e9ce1ccf6027c95e753e33797a8a8072b5f7e22c",
+      "output_directory": "output",
+      "shutdown_command": "shutdown -p now",
+      "disk_size": 40960,
+      "ssh_host_port_min": 2222,
+      "ssh_host_port_max": 2229,
+      "ssh_username": "root",
+      "ssh_password": "freenas",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "60m",
+      "boot_command":
+      [
+        "<enter>",
+        "<wait10><wait5>1<enter>",
+        "<spacebar><enter>",
+        "<enter>",
+        "freenas<tab>freenas<tab><enter>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<enter>",
+        "3<enter>"
+      ],
+      "vboxmanage": [
+          ["modifyvm", "{{.Name}}", "--nic1", "hostonly"],
+          ["modifyvm", "{{.Name}}", "--hostonlyadapter1", "vboxnet0"],
+          ["modifyvm", "{{.Name}}", "--nic2", "nat"]
+      ]
+    }
+  ],
+
+  "post-processors":[
+    {
+      "output": "FreeNAS-9.3-STABLE-201504100216-x64-vbox.box",
+      "type": "vagrant",
+      "compression_level": 1,
+      "keep_input_artifact": true
+    }
+  ]
+}
