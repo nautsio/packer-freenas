@@ -15,7 +15,7 @@
       "ssh_username": "root",
       "ssh_password": "freenas",
       "ssh_port": 22,
-      "ssh_wait_timeout": "60m",
+      "ssh_wait_timeout": "8m",
       "boot_command":
       [
         "<enter>",
@@ -25,23 +25,36 @@
         "freenas<tab>freenas<tab><enter>",
         "<wait10><wait10><wait10><wait10><wait10><wait10>",
         "<enter>",
-        "3<enter>"
+        "3<enter>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "9<enter>",
+        "curl -X PUT -u root:freenas -H 'Content-Type: application/json' -d '{\"ssh_rootlogin\": true}' http://localhost/api/v1.0/services/ssh/<enter>",
+        "curl -X PUT -u root:freenas -H 'Content-Type: application/json' -d '{\"srv_enable\": true}' http://localhost/api/v1.0/services/service/ssh/<enter>"
       ],
       "vboxmanage": [
         [ "modifyvm", "{{.Name}}", "--memory", "1024" ],
-        [ "modifyvm", "{{.Name}}", "--nic1", "hostonly" ],
-        [ "modifyvm", "{{.Name}}", "--hostonlyadapter1", "vboxnet0" ],
-        [ "modifyvm", "{{.Name}}", "--nic2", "nat" ]
+        [ "modifyvm", "{{.Name}}", "--nic1", "nat" ],
+        [ "modifyvm", "{{.Name}}", "--nic2", "hostonly" ],
+        [ "modifyvm", "{{.Name}}", "--hostonlyadapter2", "vboxnet0" ]
       ]
     }
   ],
-
   "post-processors":[
     {
       "output": "FreeNAS-9.3-STABLE-201504100216-x64-vbox.box",
       "type": "vagrant",
       "compression_level": 1,
       "keep_input_artifact": true
+    },
+    {
+      "type": "atlas",
+      "token": "ETwrzH-hBbChf1kSHwVPcXzU_5imzemHt9su_Qen676fYwGACSyad68LVVPKxMEysEM",
+      "artifact": "cargonauts/freenas",
+      "artifact_type": "virtualbox"
     }
   ]
 }
