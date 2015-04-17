@@ -28,9 +28,10 @@
         "3<enter>"
       ],
       "vboxmanage": [
-          ["modifyvm", "{{.Name}}", "--nic1", "hostonly"],
-          ["modifyvm", "{{.Name}}", "--hostonlyadapter1", "vboxnet0"],
-          ["modifyvm", "{{.Name}}", "--nic2", "nat"]
+        [ "modifyvm", "{{.Name}}", "--memory", "1024" ],
+        [ "modifyvm", "{{.Name}}", "--nic1", "hostonly" ],
+        [ "modifyvm", "{{.Name}}", "--hostonlyadapter1", "vboxnet0" ],
+        [ "modifyvm", "{{.Name}}", "--nic2", "nat" ]
       ]
     }
   ],
