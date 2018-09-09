@@ -1,0 +1,64 @@
+{
+  "builders":
+  [
+    {
+      "type": "virtualbox-iso",
+      "guest_os_type": "FreeBSD_64",
+      "iso_url": "https://download.freenas.org/11/latest/x64/FreeNAS-11.1-U6.iso",
+      "iso_checksum_type": "sha256",
+      "iso_checksum": "13bc3bf1775f6d30c6aef0102c72a1923fd7b75ca37469eb8018a2cdd97f5794",
+      "output_directory": "output",
+      "shutdown_command": "shutdown -p now",
+      "disk_size": 40960,
+      "ssh_host_port_min": 2222,
+      "ssh_host_port_max": 2229,
+      "ssh_username": "root",
+      "ssh_password": "freenas",
+      "ssh_port": 22,
+      "ssh_wait_timeout": "8m",
+      "headless": true,
+      "boot_command":
+      [
+        "<enter>",
+        "<wait10><wait5>1<enter>",
+        "Y",
+        "<wait5><spacebar><enter>",
+        "<enter>",
+        "freenas<tab>freenas<tab><enter>",
+        "I",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<enter>",
+        "3<enter>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "<wait10><wait10><wait10><wait10><wait10><wait10>",
+        "9<enter>",
+        "bash<enter>",
+        "curl --verbose --silent http://localhost/account/login/ 2>&1 | tee csrfoutput.txt<enter>",
+        "COOKIE=$(grep -o 'Cookie:[^;]*' csrfoutput.txt)<enter>",
+        "TOKEN=$(grep -o 'csrfmiddlewaretoken[^/]*/' csrfoutput.txt | awk -F\"'\" '{print $3}' | head -n1 )<enter>",
+        "curl -X PUT -u root:freenas -H \"${COOKIE}\" -H 'Content-Type: application/json' -d \"{\\\"csrfmiddlewaretoken\\\": \\\"${TOKEN}\\\", \\\"ssh_rootlogin\\\": true}\" http://localhost/api/v1.0/services/ssh/<enter>",
+        "curl -X PUT -u root:freenas -H \"${COOKIE}\" -H 'Content-Type: application/json' -d \"{\\\"csrfmiddlewaretoken\\\": \\\"${TOKEN}\\\", \\\"srv_enable\\\": true}\" http://localhost/api/v1.0/services/services/ssh/<enter>",
+        "rm csrfoutput.txt<enter>"
+      ],
+      "vboxmanage": [
+        [ "modifyvm", "{{.Name}}", "--memory", "1024" ],
+        [ "modifyvm", "{{.Name}}", "--nic1", "nat" ]
+      ]
+    }
+  ],
+  "post-processors":[
+    {
+      "output": "FreeNAS-11.1-U6-x64-vbox.box",
+      "type": "vagrant",
+      "compression_level": 1,
+      "keep_input_artifact": false
+    }
+  ]
+}
